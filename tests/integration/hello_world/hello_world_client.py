@@ -63,15 +63,15 @@ def run():
     logging.basicConfig(level=logging.INFO, format="%(asctime)-15s %(message)s")
     _LOGGER.info("Starting py-grpc-promtheus hello word server")
     call_server()
-    start_http_server(50053)
-    _LOGGER.info(
-        "Started py-grpc-promtheus client, metrics is located at http://localhost:50053"
-    )
-    try:
-        while True:
-            time.sleep(_ONE_DAY_IN_SECONDS)
-    except KeyboardInterrupt:
-        sys.exit()
+    # start_http_server(50053)
+    # _LOGGER.info(
+    #     "Started py-grpc-promtheus client, metrics is located at http://localhost:50053"
+    # )
+    # try:
+    #     while True:
+    #         time.sleep(_ONE_DAY_IN_SECONDS)
+    # except KeyboardInterrupt:
+    #     sys.exit()
 
 
 if __name__ == "__main__":
