@@ -1,12 +1,15 @@
 """Interceptor a client call with prometheus"""
+import logging
 from timeit import default_timer
+from typing import Callable, Iterator, Optional, Union, cast
 
 import grpc
 from prometheus_client.registry import REGISTRY, CollectorRegistry
 
 from py_grpc_prometheus import grpc_utils
 from py_grpc_prometheus.server.metrics import Metrics
-from typing import Optional, Callable, Union, Iterator, cast
+
+_LOGGER = logging.getLogger(__name__)
 
 
 class PromServerInterceptor(grpc.ServerInterceptor):
@@ -85,6 +88,7 @@ class PromServerInterceptor(grpc.ServerInterceptor):
             servicer_context: grpc.ServicerContext,
         ):
             start = default_timer()
+            grpc_code: Optional[str] = None
             try:
                 if request_streaming:
                     request_or_iterator = self._metrics.record_stream_msg_received(
@@ -109,26 +113,32 @@ class PromServerInterceptor(grpc.ServerInterceptor):
                         grpc_method,
                     )
                 else:
+                    grpc_code = self._compute_status_code(servicer_context).name
                     self._metrics.record_completed_rpc(
                         grpc_type,
                         grpc_service,
                         grpc_method,
-                        self._compute_status_code(servicer_context).name,
+                        grpc_code,
                     )
                 return response_or_iterator
             except grpc.RpcError as e:
+                grpc_code = self._compute_error_code(e).name
                 self._metrics.record_completed_rpc(
                     grpc_type,
                     grpc_service,
                     grpc_method,
-                    self._compute_error_code(e).name,
+                    grpc_code,
                 )
                 raise e
             finally:
+                _exec_time = default_timer() - start
                 if not response_streaming:
                     self._metrics.record_request_latency(
-                        grpc_type, grpc_service, grpc_method, default_timer() - start
+                        grpc_type, grpc_service, grpc_method, _exec_time
                     )
+                _LOGGER.debug(
+                    f"{grpc_type} {grpc_service} {grpc_method} {grpc_code} costs {_exec_time}"
+                )
 
         return _wrap_behavior
 

@@ -48,7 +48,7 @@ class Greeter(hello_world_grpc.GreeterServicer):
 
 
 def serve():
-    logging.basicConfig(level=logging.INFO, format="%(asctime)-15s %(message)s")
+    logging.basicConfig(level=logging.DEBUG, format="%(asctime)-15s %(message)s")
     _LOGGER.info("Starting py-grpc-promtheus hello word server")
     server = grpc.server(
         futures.ThreadPoolExecutor(max_workers=10),
