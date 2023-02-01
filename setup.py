@@ -45,4 +45,9 @@ setup(
     ],
     url="https://github.com/lchenn/py-grpc-prometheus",
     packages=find_packages(exclude=["tests.*", "tests"]),
+    package_data={
+        "py_grpc_prometheus": [
+            "py.typed",
+        ]
+    },
 )
