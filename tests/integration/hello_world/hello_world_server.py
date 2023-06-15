@@ -1,3 +1,7 @@
+import os
+import sys
+myPath = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, myPath + "/../../../")
 import logging
 import time
 from concurrent import futures
@@ -23,6 +27,11 @@ class Greeter(hello_world_grpc.GreeterServicer):
             raise grpc.RpcError()
         if request.name == "unknownError":
             raise Exception(request.name)
+        if request.name == "abort":
+            context.abort(
+                code=grpc.StatusCode.INVALID_ARGUMENT,
+                details="abort err string",
+            )
         return hello_world_pb2.HelloReply(message="Hello, %s!" % request.name)
 
     def SayHelloUnaryStream(self, request, context):

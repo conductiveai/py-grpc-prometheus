@@ -121,23 +121,32 @@ class PromServerInterceptor(grpc.ServerInterceptor):
                         grpc_code,
                     )
                 return response_or_iterator
-            except grpc.RpcError as e:
-                grpc_code = self._compute_error_code(e).name
+            except (grpc.RpcError, Exception) as err:
+                if isinstance(err, grpc.RpcError):
+                    grpc_code = self._compute_error_code(err).name
+                else:
+                    grpc_code = self._compute_status_code(servicer_context).name
                 self._metrics.record_completed_rpc(
                     grpc_type,
                     grpc_service,
                     grpc_method,
                     grpc_code,
                 )
-                raise e
+                raise err
             finally:
                 _exec_time = default_timer() - start
                 if not response_streaming:
                     self._metrics.record_request_latency(
                         grpc_type, grpc_service, grpc_method, _exec_time
                     )
-                _LOGGER.debug(
-                    f"{grpc_type} {grpc_service} {grpc_method} {grpc_code} costs {_exec_time}"
+                _LOGGER.log(
+                    logging.DEBUG if grpc_code == grpc.StatusCode.OK else logging.ERROR,
+                    "%s %s %s %s costs %.10f",
+                    grpc_type,
+                    grpc_service,
+                    grpc_method,
+                    grpc_code,
+                    _exec_time,
                 )
 
         return _wrap_behavior
