@@ -21,11 +21,11 @@ def call_server():
     # Call the unary-unary.
     for _ in range(5):
         try:
-            response = stub.SayHello(hello_world_pb2.HelloRequest(name="Unary"))
+            response = stub.SayHello(hello_world_pb2.HelloRequest(name="abort"))
             _LOGGER.info("Unary response: %s", response.message)
             _LOGGER.info("")
-        except grpc.RpcError:
-            _LOGGER.error("Got an exception from server")
+        except grpc.RpcError as err:
+            _LOGGER.error("Got an exception from server %s %s", err.code(), err.details())
 
     # Call the unary stream.
     _LOGGER.info("Running Unary Stream client")
