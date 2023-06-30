@@ -140,7 +140,7 @@ class PromServerInterceptor(grpc.ServerInterceptor):
                         grpc_type, grpc_service, grpc_method, _exec_time
                     )
                 _LOGGER.log(
-                    logging.DEBUG if grpc_code == grpc.StatusCode.OK else logging.ERROR,
+                    logging.DEBUG if grpc_code == grpc.StatusCode.OK.name else logging.ERROR,
                     "%s %s %s %s costs %.10f",
                     grpc_type,
                     grpc_service,
