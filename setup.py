@@ -43,7 +43,7 @@ setup(
         "prometheus_client>=0.3.0",
         "grpc-stubs==1.24.11",
     ],
-    url="https://github.com/lchenn/py-grpc-prometheus",
+    url="https://github.com/conductive/py-grpc-prometheus",
     packages=find_packages(exclude=["tests.*", "tests"]),
     package_data={
         "py_grpc_prometheus": [
