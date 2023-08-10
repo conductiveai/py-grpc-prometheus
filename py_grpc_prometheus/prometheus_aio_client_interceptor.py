@@ -8,7 +8,7 @@ from prometheus_client.registry import REGISTRY
 from py_grpc_prometheus import grpc_utils
 from py_grpc_prometheus.client_metrics import init_metrics
 
-class PromClientAioInterceptor(grpc.aio.UnaryUnaryClientInterceptor,
+class PromAioServerInterceptor(grpc.aio.UnaryUnaryClientInterceptor,
                             grpc.aio.UnaryStreamClientInterceptor,
                             grpc.aio.StreamUnaryClientInterceptor,
                             grpc.aio.StreamStreamClientInterceptor):
