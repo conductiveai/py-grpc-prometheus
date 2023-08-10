@@ -24,7 +24,7 @@ def get_method_type(request_streaming: bool, response_streaming: bool):
     return UNARY
 
 
-def split_method_call(handler_call_details: grpc.HandAAAlerCallDetails):
+def split_method_call(handler_call_details: grpc.HandlerCallDetails):
     """
     Infers the grpc service and method name from the handler_call_details.
     """
