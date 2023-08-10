@@ -1,2 +1,4 @@
 # Use the dependencies from the setup.py.
--e .
+setuptools>=39.0.1
+grpcio>=1.10.0
+prometheus_client>=0.3.0
